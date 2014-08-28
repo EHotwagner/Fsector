@@ -323,7 +323,7 @@ module D2D1BackEnd =
 
     type Orientation = X|Y
 
-    let coordLinesDir (form:RenderForm) o dist w c = //change brush!!
+    let coordLinesDir (form:RenderForm) o dist w c = 
         let res = form.Size.ToSketch
         match o with
         |X -> [for h in 0.0 .. dist ..  res.Y -> Image.Figure(Shape.line (Utilities.V(0.0,h)) (Utilities.V(res.X,h)) c w)]
@@ -471,14 +471,19 @@ module D2D1BackEnd =
             |Image.Bitmap(name,tr) -> 
                 dm.loadImageFile name 
                 |> drawBitmap dm tr
-            |Image.Text(text,tr) -> //change to drawtext, not cached bitmap.  
-                let bm = bitmap dm img 
-                let center = Utilities.V(float bm.Size.Width / 2.0, float bm.Size.Height / 2.0)
+            |Image.Text(text,tr) -> 
+                let format = Text.toD2D1 dm text.Format
+                let layout = new DirectWrite.TextLayout(dm.Factories.DirectWrite,text.Text, format,0.f,0.f)
+                let brush = new Direct2D1.SolidColorBrush(dm.Context,Color4.Black)
+                let width, height = 
+                    match text.Rectangle with
+                    |Some(v) -> float32 v.X, float32 v.Y
+                    |None   -> layout.Metrics.Width,layout.Metrics.Height
+                let center = Utilities.V(float width /2.0, float height/ 2.0)
                 let tm = Transformation.toD2D1Matrix center tr
-                fun () -> 
-                    dm.Context.Transform <- tm 
-                    dm.Context.DrawImage(bm) 
-                    dm.Context.Transform <- Matrix3x2.Identity
+                fun () ->   dm.Context.Transform <- tm
+                            dm.Context.DrawText(text.Text, Text.toD2D1 dm text.Format, new RectangleF(0.f,0.f,width,height), brush ) 
+                            dm.Context.Transform <- Matrix3x2.Identity
             |Image.Effect(effect,tr) -> 
                 let bm = bitmap dm img 
                 let center = Utilities.V(float bm.Size.Width / 2.0, float bm.Size.Height / 2.0)
