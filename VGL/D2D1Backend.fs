@@ -510,15 +510,15 @@ module D2D1BackEnd =
                         yield r.ToArray()
                 }
             let lines = coordLines form (float heightImg) (float WidthImg * 2.0) 2 (Sketch.Color.Black |> Sketch.Color.veryTransparent)
-            let splitImgs = splitEach (n*n) imgs |> Seq.map (fun ls -> List.ofSeq ls) |> List.ofSeq //who cares for performance
+            let splitImgs = splitEach (n*n) imgs |> Seq.map (fun ls -> List.ofSeq ls) |> List.ofSeq 
             List.nth splitImgs (ind % splitImgs.Length) |> List.mapi (fun i img ->  Image.position (WidthImg/2 + i % n * WidthImg * 2) (heightImg/2 + i/n * heightImg) img,
-                                                                                    Image.text (Printf.sprintf "%A" img) Text.timesNewRoman 15 None (Transformation.position (WidthImg + WidthImg / 2 + i % n * WidthImg * 2) (heightImg/2 + i/n * heightImg)) //too lazy to convert to float check!!
+                                                                                    Image.text (Printf.sprintf "%A" img) Text.timesNewRoman 15 None (Transformation.position (WidthImg + WidthImg / 2 + i % n * WidthImg * 2) (heightImg/2 + i/n * heightImg)) 
                                                                           ) |> List.unzip
                                                                             |> fun (imgs,dus) -> imgs @ dus
                                                                             |> List.map (fun i -> resize dm WidthImg heightImg 12 i)
                                                                             |> fun ls -> ls @ lines
             
-    type DeviceManager with //cant remember why here and not in wrapper.
+    type DeviceManager with 
         member x.draw (bs: List<Image.T>) =
             let drawFunctions = bs |> List.map (fun i -> Image.draw x i)
             match x.RenderTarget with

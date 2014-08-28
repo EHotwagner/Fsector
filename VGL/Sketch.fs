@@ -127,14 +127,30 @@ module Sketch =
         let VeryThin = 1
         type T =
             {Outline: Option<Brush.T*int>;Fill:Option<Brush.T>}
-        let outlined c w = {Outline=Some(Brush.Solid(c),w);Fill=None}
-        let outline (st:T) c w = {st with Outline = Some(Brush.Solid(c),w)}
-        let filled c = {Outline=None;Fill=Some(Brush.Solid(c))}
-        let fill (st:T) c = {st with Fill=Some(Brush.Solid(c))}
-        let BlackOM = outlined Color.Black Medium
-        let RedOM = outlined Color.Red Medium
-        let BlackF= filled Color.Black
-        let RedF= filled Color.Red 
+        let outline c w = {Outline=Some(Brush.Solid(c),w);Fill=None}
+        let chOutline (st:T) c w = {st with Outline = Some(Brush.Solid(c),w)}
+        let fill c = {Outline=None;Fill=Some(Brush.Solid(c))}
+        let chFill (st:T) c = {st with Fill=Some(Brush.Solid(c))}
+        let full co w ci = {Outline=Some(Brush.Solid(co),w);Fill=Some(Brush.Solid(ci))}
+        let thickness w st = 
+            match st with
+            |{Outline=Some(b,ow)} -> {st with Outline=Some(b,w)}
+            |_  -> st
+
+        let BlackOM = outline Color.Black Medium
+        let RedOM = outline Color.Red Medium
+        let BlackF= fill Color.Black
+        let RedF= fill Color.Red 
+        let YellowGreen = full Color.Yellow Medium Color.Green
+        let GreenYellow = full Color.Green Medium Color.Yellow
+        let RedBlue = full Color.Red Medium Color.Blue
+        let BlueRed = full Color.Blue Medium Color.Red
+        let BlackWhite = full Color.Black Medium Color.White
+        let WhiteBlack = full Color.White Medium Color.Black
+        let MagentaRed = full Color.Magenta Medium Color.Red
+        let RedMagenta = full Color.Red Medium Color.Magenta
+        let SilverNavy = full Color.Silver Medium Color.Navy
+        let NavySilver = full Color.Navy Medium Color.Silver
 
     module Path = //only works for filled path!!!
 

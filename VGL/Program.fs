@@ -21,7 +21,7 @@ module Program =
                 |B of string*int
 
 //    printfn "Image List: %A" Tests.workingImgs
-    let dm = D2D1Wrapper.deviceManager (D2D1Wrapper.debug  |> w.coords true) 
+    let dm = D2D1Wrapper.deviceManager (D2D1Wrapper.debug  |> w.coords false) 
 //    let dm = D2D1Wrapper.deviceManager (D2D1Wrapper.debug ) 
 
 //    do  printfn "%A" (match dm.RenderTarget with
